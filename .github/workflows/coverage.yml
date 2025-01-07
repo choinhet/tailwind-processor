@@ -1,0 +1,48 @@
+name: Coverage
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+    branches:
+      - master
+      - develop
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      
+      - name: Install UV
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+      
+      - name: Install dependencies
+        run: |
+          uv add --dev pytest pytest-cov
+          uv add streamlit
+          uv pip install -e .
+      
+      - name: Run unit tests with coverage
+        run: |
+          uv run pytest tests/test_tailwind_processor.py --cov=tailwind_processor --cov-report=xml
+      
+      - name: Run e2e tests
+        run: |
+          uv run pytest tests/e2e -v --headed
+      
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          fail_ci_if_error: true

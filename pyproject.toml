@@ -1,0 +1,20 @@
+[project]
+name = "tailwind-processor"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = ["pytailwindcss>=0.2.0"]
+
+[tool.setuptools]
+packages = ["tailwind_processor"]
+
+[tool.uv]
+dev-dependencies = [
+    "ipython>=8.18.1",
+    "pyright>=1.1.380",
+    "pytest>=8.3.3",
+    "pytest-asyncio>=0.24.0",
+    "coverage>=7.6.1",
+]
+

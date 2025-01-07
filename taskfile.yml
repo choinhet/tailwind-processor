@@ -1,0 +1,11 @@
+version: "3"
+
+tasks:
+
+  coverage:
+    cmds:
+      - coverage run --source=tailwind_processor -m unittest discover
+      - coverage report --omit 'test/*'
+      - coverage html
+
+

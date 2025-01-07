@@ -11,10 +11,8 @@ packages = ["tailwind_processor"]
 
 [tool.uv]
 dev-dependencies = [
-    "ipython>=8.18.1",
-    "pyright>=1.1.380",
     "pytest>=8.3.3",
-    "pytest-asyncio>=0.24.0",
+    "pytest-cov>=4.1.0",
     "coverage>=7.6.1",
 ]
 

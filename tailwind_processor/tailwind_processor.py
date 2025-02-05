@@ -30,6 +30,7 @@ class TailwindProcessor:
 
         # All temporary files
         input_file = parent / "input.css"
+        output_file = parent / "output.css"
         content_file = parent / "content.html"
         configs = parent / "tailwind.config.js"
 
@@ -53,19 +54,20 @@ class TailwindProcessor:
 
         configs.write_text(config_content)
         input_file.write_text(tailwind_apply)
-        base_task = "uv run tailwindcss".split(" ")
-        command = [
-            *base_task,
-            "-c", configs.as_posix(),
-            "-i", input_file.as_posix(),
-            "--minify",
-        ]
 
-        result = subprocess.run(command, capture_output=True, text=True)
+        c = configs.as_posix()
+        i = input_file.as_posix()
+        o = output_file.as_posix()
 
+        command = 'uv run tailwindcss -c "%s" -i "%s" -o "%s" --minify' % (c, i, o)
+        p = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+        output, err = p.communicate()
+        p_status = p.wait()
+
+        log.info("\nStatus: %s\nOutput: %s" % (p_status, output))
+        if err:
+            log.info(err)
+
+        result = output_file.read_text()
         shutil.rmtree(parent.as_posix())
-
-        if result.stderr:
-            log.info(result.stderr)
-
-        return result.stdout
+        return result

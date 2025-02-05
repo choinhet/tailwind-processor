@@ -3,12 +3,9 @@ import textwrap
 from pathlib import Path
 from typing import List
 import shutil
-
-
 import logging
 
 log = logging.getLogger(__name__)
-
 
 class TailwindProcessor:
     """
@@ -28,19 +25,15 @@ class TailwindProcessor:
         parent = Path(__file__).parent / "tmp"
         parent.mkdir(parents=True, exist_ok=True)
 
-        # All temporary files
         input_file = parent / "input.css"
         output_file = parent / "output.css"
         content_file = parent / "content.html"
         configs = parent / "tailwind.config.js"
 
-        # Write the content file
         tw_classes = " ".join(tailwind_classes)
         content_file.write_text(f"<div class='{tw_classes}'></div>")
 
-        # Write the config file
-        config_content = (
-            textwrap.dedent("""
+        config_content = textwrap.dedent("""
             /** @type {import('tailwindcss').Config} */
             module.exports = {
                 content: ['%s'],
@@ -49,25 +42,32 @@ class TailwindProcessor:
                 },
                 plugins: [],
             }
-            """)
-        ) % content_file.as_posix()
-
+            """) % content_file.as_posix()
         configs.write_text(config_content)
+
         input_file.write_text(tailwind_apply)
 
         c = configs.as_posix()
         i = input_file.as_posix()
         o = output_file.as_posix()
 
-        command = 'uv run tailwindcss -c "%s" -i "%s" -o "%s" --minify' % (c, i, o)
-        p = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
-        output, err = p.communicate()
-        p_status = p.wait()
+        command = [
+            "uv", "run", "tailwindcss",
+            "-c", c,
+            "-i", i,
+            "-o", o,
+            "--minify"
+        ]
 
-        log.info("\nStatus: %s\nOutput: %s" % (p_status, output))
-        if err:
-            log.info(err)
+        try:
+            result = subprocess.run(command, capture_output=True, text=True, check=True)
+            log.info("Command output:\n%s", result.stdout)
+        except subprocess.CalledProcessError as e:
+            log.error("Tailwind command failed with code %s: %s", e.returncode, e.stderr)
+            raise
 
-        result = output_file.read_text()
+        # Read the generated CSS output
+        final_css = output_file.read_text()
         shutil.rmtree(parent.as_posix())
-        return result
+        return final_css
+

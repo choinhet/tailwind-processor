@@ -1,6 +1,6 @@
 [project]
 name = "tailwind-processor"
-version = "1.2.3"
+version = "1.2.4"
 description = "Tailwind CSS classes processor"
 readme = "README.md"
 requires-python = ">=3.9"

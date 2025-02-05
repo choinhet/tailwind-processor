@@ -54,7 +54,7 @@ class TailwindProcessor:
 
             configs.write_text(config_content)
             input_file.write_text(tailwind_apply)
-            base_task = "task uv -- run tailwindcss".split(" ")
+            base_task = "uv run tailwindcss".split(" ")
             command = [
                 *base_task,
                 "-c", configs.as_posix(),

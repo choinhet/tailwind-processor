@@ -69,6 +69,11 @@ class TailwindProcessor:
 
         # Read the generated CSS output
         final_css = output_file.read_text()
+
+        log.info("Output File:\n" + output_file.read_text())
+        log.info("Input File:\n" + input_file.read_text())
+        log.info("Content File:\n" + content_file.read_text())
+
         shutil.rmtree(parent.as_posix())
         return final_css
 

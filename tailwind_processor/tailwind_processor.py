@@ -66,7 +66,7 @@ class TailwindProcessor:
             ]
 
             try:
-                result = subprocess.run(command, capture_output=True, text=True, check=True)
+                result = subprocess.run(command, capture_output=True, text=True, check=True, env=env)
                 log.info("Command output:\n%s", result.stdout)
             except subprocess.CalledProcessError as e:
                 log.error("Tailwind command failed with code %s: %s", e.returncode, e.stderr)

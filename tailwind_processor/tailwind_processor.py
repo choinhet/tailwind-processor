@@ -55,7 +55,7 @@ class TailwindProcessor:
             o = output_file.as_posix()
 
             env = os.environ.copy()
-            env["TAILWINDCSS_VERSION"] = "3.2.7"
+            env["TAILWINDCSS_VERSION"] = "3.4.17"
 
             command = [
                 "uv", "run", "tailwindcss",

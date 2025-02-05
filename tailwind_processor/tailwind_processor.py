@@ -31,20 +31,21 @@ class TailwindProcessor:
         configs = parent / "tailwind.config.js"
 
         tw_classes = " ".join(tailwind_classes)
-        content_file.write_text(f"<div class='{tw_classes}'></div>")
+        content_file.write_text(f'<div class="{tw_classes}"></div>')
 
         config_content = textwrap.dedent("""
             /** @type {import('tailwindcss').Config} */
             module.exports = {
                 content: ['%s'],
+                safelist: [%s],
                 theme: {
                     extend: {},
                 },
                 plugins: [],
             }
-            """) % content_file.as_posix()
-        configs.write_text(config_content)
+            """) % (content_file.as_posix(), ",".join(f"'{e}'" for e in tailwind_classes))
 
+        configs.write_text(config_content)
         input_file.write_text(tailwind_apply)
 
         c = configs.as_posix()

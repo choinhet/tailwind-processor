@@ -1,6 +1,9 @@
 version: "3"
 
 tasks:
+  uv:
+    cmds:
+      - uv {{.CLI_ARGS}}
 
   coverage:
     cmds:

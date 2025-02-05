@@ -29,10 +29,10 @@ class TailwindProcessor:
             parent.mkdir(parents=True, exist_ok=True)
 
             # All temporary files
-            input_file = (parent / "input.css").absolute()
-            output_file = (parent / "output.css").absolute()
-            content_file = (parent / "content.html").absolute()
-            configs = (parent / "tailwind.config.js").absolute()
+            input_file = parent / "input.css"
+            output_file = parent / "output.css"
+            content_file = parent / "content.html"
+            configs = parent / "tailwind.config.js"
 
             # Write the content file
             tw_classes = " ".join(tailwind_classes)
@@ -54,14 +54,12 @@ class TailwindProcessor:
 
             configs.write_text(config_content)
             input_file.write_text(tailwind_apply)
+            base_task = "task uv -- run tailwindcss".split(" ")
             command = [
-                "tailwindcss",
-                "-c",
-                configs.as_posix(),
-                "-i",
-                input_file.as_posix(),
-                "-o",
-                output_file.as_posix(),
+                *base_task,
+                "-c", configs.as_posix(),
+                "-i", input_file.as_posix(),
+                "-o", output_file.as_posix(),
                 "--minify",
             ]
 

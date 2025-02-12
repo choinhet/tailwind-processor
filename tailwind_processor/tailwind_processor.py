@@ -5,6 +5,8 @@ import textwrap
 from pathlib import Path
 from typing import List
 import tempfile
+import tailwind_processor.resources as rsc
+import importlib.resources as pkg_resources
 
 log = logging.getLogger(__name__)
 
@@ -35,17 +37,8 @@ class TailwindProcessor:
             tw_classes = " ".join(tailwind_classes)
             content_file.write_text(f'<div class="{tw_classes}"></div>')
 
-            config_content = textwrap.dedent("""
-                /** @type {import('tailwindcss').Config} */
-                module.exports = {
-                    content: ['%s'],
-                    safelist: [%s],
-                    theme: {
-                        extend: {},
-                    },
-                    plugins: [],
-                }
-                """) % (content_file.as_posix(), ",".join(f"'{e}'" for e in tailwind_classes))
+            config = Path(str(pkg_resources.files(rsc))) / "config.js"
+            config_content = config.read_text() % (content_file.as_posix(), ",".join(f"'{e}'" for e in tailwind_classes))
 
             configs.write_text(config_content)
             input_file.write_text(tailwind_apply)

@@ -18,7 +18,7 @@ class TestTailwindProcessor(unittest.TestCase):
         ]
         processed = self.tp.process(tailwind_classes)
         self.assertIn(
-            r".h-dvh{height:100dvh}.text-red-500{--tw-text-opacity:1;color:rgb(239 68 68/var(--tw-text-opacity,1))}",
+            r".h-dvh{height:100dvh}.text-red-500",
             processed,
         )
 

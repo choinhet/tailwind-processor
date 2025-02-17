@@ -1,5 +1,4 @@
 import logging
-import subprocess
 import unittest
 from unittest.mock import patch
 
@@ -22,21 +21,20 @@ class TestTailwindProcessor(unittest.TestCase):
             processed,
         )
 
-    def test_text_processor_error(self):
-        tailwind_classes = [
-            "text-red-500",
-            "h-dvh",
-        ]
-        with patch("subprocess.run") as mock_run:
-            mock_run.side_effect = subprocess.CalledProcessError(
-                returncode=1,
-                cmd=["uv", "run", "tailwindcss", "-c", "dummy", "-i", "dummy", "-o", "dummy", "--minify"],
-                output="",
-                stderr="Simulated error"
-            )
-            with self.assertRaises(subprocess.CalledProcessError) as cm:
-                self.tp.process(tailwind_classes)
-            self.assertIn("Simulated error", cm.exception.stderr)
+    @patch("pytailwindcss.run")
+    def test_process_exception_handling(self, mock_run):
+        mock_run.side_effect = Exception("Simulated Tailwind processing error")
+        tailwind_classes = ["text-red-500"]
+        with self.assertLogs(level="ERROR") as log_context:
+            try:
+                result = self.tp.process(tailwind_classes)
+                self.fail("Expected an exception to be logged")
+            except Exception:
+                log_messages = [record.getMessage() for record in log_context.records]
+                self.assertTrue(
+                    any("Tailwind command failed" in msg for msg in log_messages)
+                )
+
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)

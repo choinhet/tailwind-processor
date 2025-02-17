@@ -7,6 +7,7 @@ from typing import List
 import tempfile
 import tailwind_processor.resources as rsc
 import importlib.resources as pkg_resources
+from pytailwindcss import get_bin_path
 
 log = logging.getLogger(__name__)
 
@@ -50,8 +51,10 @@ class TailwindProcessor:
             env = os.environ.copy()
             env["TAILWINDCSS_VERSION"] = "v3.4.17"
 
+            bin_path = get_bin_path()
+
             command = [
-                "uv", "run", "tailwindcss",
+                bin_path,
                 "-c", c,
                 "-i", i,
                 "-o", o,
@@ -67,4 +70,3 @@ class TailwindProcessor:
 
             final_css = output_file.read_text()
             return final_css
-

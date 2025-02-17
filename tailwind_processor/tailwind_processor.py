@@ -1,13 +1,14 @@
+import importlib.resources as pkg_resources
 import logging
 import os
-import subprocess
+import tempfile
 import textwrap
 from pathlib import Path
 from typing import List
-import tempfile
-import tailwind_processor.resources as rsc
-import importlib.resources as pkg_resources
+
 import pytailwindcss
+
+import tailwind_processor.resources as rsc
 
 log = logging.getLogger(__name__)
 
@@ -57,11 +58,17 @@ class TailwindProcessor:
 
             try:
                 result = pytailwindcss.run(
-                    ["-c", c, "-i", i, "-o", o, "--minify"], env=env
+                    ["-c", c, "-i", i, "-o", o, "--minify"],
+                    auto_install=True,
+                    env=env,
                 )
                 log.info("Command output:\n%s", result)
             except Exception as e:
                 log.error("Tailwind command failed:\n%s" % e)
+                raise
+
+            if not output_file.exists():
+                raise FileNotFoundError(f"Output CSS file not created at {o}")
 
             final_css = output_file.read_text()
             return final_css

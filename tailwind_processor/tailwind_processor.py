@@ -41,13 +41,11 @@ class TailwindProcessor:
         self,
         parent: Path,
         content_file: str,
-        classes: List[str],
     ) -> Tuple[Path, Optional[Exception]]:
         try:
             configs = parent / "tailwind.config.js"
             config = Path(str(pkg_resources.files(rsc))) / "config.js"
-            str_classes = (",".join(f"'{e}'" for e in classes),)
-            config_content = config.read_text() % (content_file, str_classes)
+            config_content = config.read_text() % content_file
             configs.write_text(config_content)
             return configs, None
         except Exception as e:
@@ -66,22 +64,25 @@ class TailwindProcessor:
         input_path: Path,
         output_path: Path,
     ) -> Optional[Exception]:
-        result = ""
+        result, args = "", []
+        args = []
         try:
             c = config_path.as_posix()
             i = input_path.as_posix()
             o = output_path.as_posix()
+            args = ["-c", c, "-i", i, "-o", o, "--minify"]
 
             result = pytailwindcss.run(
-                ["-c", c, "-i", i, "-o", o, "--minify"],
+                args,
                 auto_install=True,
                 env=self._get_environment(),
+                live_output=True,
             )
 
             log.info("Command output:\n%s", result)
         except Exception as e:
             return Exception(
-                f"Failed to run tailwind command:\nCommand Output:{result}\nCause:\n{e}"
+                f"Failed to run tailwind command:\nCommand Output:{result}\nArgs:{args}\nCause:\n{e}"
             )
 
     def _run_for_content(
@@ -96,7 +97,7 @@ class TailwindProcessor:
         if err:
             return "", err
 
-        config_path, err = self._set_configs(parent, content_path, tw_classes)
+        config_path, err = self._set_configs(parent, content_path)
         if err:
             return "", err
 
@@ -111,6 +112,7 @@ class TailwindProcessor:
         )
         if err:
             return "", err
+
         try:
             return output_path.read_text(), None
         except Exception as e:

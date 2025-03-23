@@ -14,5 +14,7 @@ dev-dependencies = [
     "pytest>=8.3.3",
     "pytest-cov>=4.1.0",
     "coverage>=7.6.1",
+    "debugpy>=1.8.13",
+    "pytest-mock>=3.14.0",
 ]
 

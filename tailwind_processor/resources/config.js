@@ -2,7 +2,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     content: ['%s'],
-    safelist: [% s],
     theme: {
         fontSize: {
             xs: '12px',

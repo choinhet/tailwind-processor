@@ -179,28 +179,3 @@ class TailwindProcessor:
                 return result, None
         except Exception as e:
             return "", Exception(f"Failed to process tailwind classes:\n{e}")
-
-if __name__ == "__main__":
-    tp = TailwindProcessor()
-
-    tailwind_classes = [
-        "text-red-500",
-        "h-dvh",
-    ]
-    processed, err = tp.process(tailwind_classes)
-
-    if err:
-        raise err
-
-    print(processed)
-
-    file_content = textwrap.dedent("""
-    <div class="text-red-500 h-dvh">
-        Hey!
-    </div>
-    """)
-    processed, err = tp.process_file_str(file_content)
-
-    if err:
-        raise err
-    print(processed)

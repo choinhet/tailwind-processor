@@ -1,6 +1,6 @@
 [project]
 name = "tailwind-processor"
-version = "1.2.16"
+version = "2.0.0"
 description = "Tailwind CSS classes processor"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -14,5 +14,7 @@ dev-dependencies = [
     "pytest>=8.3.3",
     "pytest-cov>=4.1.0",
     "coverage>=7.6.1",
+    "debugpy>=1.8.13",
+    "pytest-mock>=3.14.0",
 ]
 

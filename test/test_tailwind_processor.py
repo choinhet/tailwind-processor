@@ -17,7 +17,6 @@ def test_text_processor(tailwind_processor: TailwindProcessor):
         "h-dvh",
     ]
     processed, err = tailwind_processor.process(tailwind_classes)
-    print(err)
 
     assert err is None
     assert r".h-dvh{height:100dvh}.text-red-500" in processed
